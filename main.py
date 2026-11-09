@@ -1,19 +1,30 @@
+import scores
+
+
 board_size = 3
-none_icon = '#'
+none_icon = "#"
 board: list[list[str]] = [[none_icon] * board_size for _ in range(board_size)]
 
 WIN_LINES = [
-    ((0,0),(0,1),(0,2)), ((1,0),(1,1),(1,2)), ((2,0),(2,1),(2,2)),
-    ((0,0),(1,0),(2,0)), ((0,1),(1,1),(2,1)), ((0,2),(1,2),(2,2)),
-    ((0,0),(1,1),(2,2)), ((0,2),(1,1),(2,0)),
+    ((0, 0), (0, 1), (0, 2)),
+    ((1, 0), (1, 1), (1, 2)),
+    ((2, 0), (2, 1), (2, 2)),
+    ((0, 0), (1, 0), (2, 0)),
+    ((0, 1), (1, 1), (2, 1)),
+    ((0, 2), (1, 2), (2, 2)),
+    ((0, 0), (1, 1), (2, 2)),
+    ((0, 2), (1, 1), (2, 0)),
 ]
 
+
 def clear() -> None:
-    print('\033[2J\033[H', end='', flush=True)
+    print("\033[2J\033[H", end="", flush=True)
+
 
 def draw_board() -> None:
     for row in board:
-        print(' | '.join(row))
+        print(" | ".join(row))
+
 
 def winner() -> str | None:
     for line in WIN_LINES:
@@ -22,19 +33,20 @@ def winner() -> str | None:
             return a
     return None
 
+
 def main() -> None:
     used: list[tuple[int, int]] = []
 
     while True:
         clear()
-        state = 'X' if len(used) % 2 == 0 else 'O'
+        state = "X" if len(used) % 2 == 0 else "O"
         print(f"{state}'s turn\n")
         draw_board()
         print()
 
         try:
-            x = int(input('введите x: '))
-            y = int(input('введите y: '))
+            x = int(input("введите x: "))
+            y = int(input("введите y: "))
         except ValueError:
             continue
 
@@ -50,14 +62,23 @@ def main() -> None:
         if w:
             clear()
             draw_board()
-            print(f'{w} won!')
+            print(f"{w} won!")
+            updated = scores.record_win(w)
+            print(
+                f"Score: X={updated['X']}, O={updated['O']}, draws={updated['draws']}"
+            )
             return
 
         if len(used) == board_size * board_size:
             clear()
             draw_board()
-            print('Draw!')
+            print("Draw!")
+            updated = scores.record_draw()
+            print(
+                f"Score: X={updated['X']}, O={updated['O']}, draws={updated['draws']}"
+            )
             return
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
